@@ -90,7 +90,11 @@ class Accounts
     {
         $database = $this->load();
         $user_id = $_SESSION[$this->AppName]['user']['id'] ?? '';
-        return $database['user'][$user_id];
+
+        if (isset($database['user'][$user_id])) {
+            return $database['user'][$user_id];
+        }
+        return null;
     }
 
     /**

@@ -6,8 +6,8 @@ require_once './functions/Trade.php';
 require_once './functions/Accounts.php';
 
 $BitAPI = new BitAPI();
-$Accounts = new Accounts('./db/database.json', 'bitcoin');
-$Trade = new Trade($BitAPI, './db/database.json', '');
+$Accounts = new Accounts('./database/database.json', 'bitcoin');
+$Trade = new Trade($BitAPI, './database/database.json', '');
 
 $user_data = $Accounts->isLogin();
 
