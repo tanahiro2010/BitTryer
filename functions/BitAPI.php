@@ -106,7 +106,7 @@ class BitAPI
         try {
             $response = $this->getBitCoinApiResponse();
 
-            if (isset($response)) {
+            if ($response == null) {
                 throw new Exception('Error');
             }
 
