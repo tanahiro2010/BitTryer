@@ -55,4 +55,5 @@ function echo_header($user_data, $BitAPI)
         <!-- コンテンツをここに追加 -->
 
     <?php
+    return $bitcoinPrice;
 }

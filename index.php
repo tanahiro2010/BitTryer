@@ -11,11 +11,10 @@ $Trade = new Trade($BitAPI, './database/database.json', '');
 
 $user_data = $Accounts->isLogin();
 
-echo_header($user_data, $BitAPI);
+$bitcoinPrice = (int)echo_header($user_data, $BitAPI);
 
 // 価格を取得して表示
-$bitcoinPrice = $BitAPI->getYenPrice();
-echo $Trade->getMaxBit($bitcoinPrice);
+echo $Trade->getMaxBit($bitcoinPrice); // 1って出ないとおかしい
 ?>
 
 </main>
