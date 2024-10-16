@@ -15,7 +15,7 @@ echo_header($user_data, $BitAPI);
 
 // 価格を取得して表示
 $bitcoinPrice = $BitAPI->getYenPrice();
-echo $Trade->getMaxPrice($bitcoinPrice)
+echo $Trade->getMaxPrice((float)$bitcoinPrice);
 ?>
 
 </main>
