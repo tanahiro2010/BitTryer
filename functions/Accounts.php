@@ -45,10 +45,12 @@ class Accounts
                 'id' => $id,
                 'name' => $name,
                 'mail' => $mail,
-                'password' => password_hash($password, PASSWORD_DEFAULT),
+                'password' => password_hash(md5($password), PASSWORD_DEFAULT),
 
                 'total_yen' => 100000,
-                'total_bitcoin' => 0
+                'total_bitcoin' => 0,
+
+                'trade_history' => array()
             );
 
             $database['user'][$id] = $user_data;
@@ -71,7 +73,7 @@ class Accounts
         $database = $this->load();
 
         if (isset($database['user'][$id])) {
-            if (password_verify($password, $database['user'][$id]['password'])) {
+            if (password_verify(md5($password), $database['user'][$id]['password'])) {
                 $_SESSION[$this->AppName]['user'] = $database['user'][$id];
                 return $database['user'][$id];
             } else {
@@ -113,5 +115,24 @@ class Accounts
     {
         $database = $this->load();
         return $database['user'][$user_id] ?? false;
+    }
+
+    public function forget_password_create_token(string $user_id)
+    {
+        $database = $this->load();
+
+        $user_data = $this->in_account($user_id);
+        if ($user_data) {
+            $token = bin2hex(random_bytes(32));
+            $database['token'][$token] = $user_id;
+            $user_mail = $user_data['mail'];
+
+            $content = "BitTryerをご利用していただきありがとうございます。\n";
+
+            mb_internal_encoding('UTF-8');
+            mb_language('ja');
+
+            mb_send_mail($user_mail, "BitTryerパスワードリセット", $mail_content);
+        }
     }
 }

@@ -35,7 +35,7 @@ function echo_header($user_data, $BitAPI)
         <section>
             <header class="bg-gradient-to-r from-blue-900 to-gray-900 space-y-4 p-4 sm:px-8 sm:py-6 lg:p-4 xl:px-8 xl:py-6 shadow-md">
                 <div class="flex items-center justify-between">
-                    <h2 class="font-semibold text-blue-200 text-3xl cursor-pointer">BitTryer</h2>
+                    <a href="/" class="font-semibold text-blue-200 text-3xl cursor-pointer">BitTryer</a>
                     <div class="text-white">
                         <?php if ($bitcoinPrice): ?>
                             現在、1ビットコインは<?php echo $bitcoinPrice ?>円で買収可能です
@@ -51,7 +51,7 @@ function echo_header($user_data, $BitAPI)
             </header>
         </section>
 
-    <main class="bg-gradient-to-r from-blue-800 via-purple-600 to-gray-500 text-white p-8 shadow-lg">
+    <main class="bg-gradient-to-r from-blue-800 to-gray-500 text-white p-8 shadow-lg h-full">
         <!-- コンテンツをここに追加 -->
 
     <?php
