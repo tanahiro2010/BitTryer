@@ -55,7 +55,7 @@ class Accounts
 
             $database['user'][$id] = $user_data;
 
-            $this->save($user_data);
+            $this->save($database);
             $_SESSION[$this->AppName]['user'] = $user_data;
 
             return $user_data;
@@ -117,6 +117,12 @@ class Accounts
         return $database['user'][$user_id] ?? false;
     }
 
+    /**
+     * @param string $user_id
+     * @return false|string
+     * @throws \Random\RandomException
+     */
+
     public function forget_password_create_token(string $user_id)
     {
         $database = $this->load();
@@ -124,15 +130,64 @@ class Accounts
         $user_data = $this->in_account($user_id);
         if ($user_data) {
             $token = bin2hex(random_bytes(32));
-            $database['token'][$token] = $user_id;
+            $_SESSION[$this->AppName]['token'] = $token;
+            $database['forget_token'][$token] = $user_id;
+            $this->save($database);
+
             $user_mail = $user_data['mail'];
 
-            $content = "BitTryerをご利用していただきありがとうございます。\n";
+            $content = "平素よりBitTryerをご利用していただきありがとうございます。\n\nパスワード変更する場合は以下のURLをタップしてください\n\nhttps://bitcoin.tanahiro2010.com/login/forget_password?token=$token\n\n身に覚えのないメールの場合、無視してください";
 
             mb_internal_encoding('UTF-8');
             mb_language('ja');
 
-            mb_send_mail($user_mail, "BitTryerパスワードリセット", $mail_content);
+            mb_send_mail($user_mail, "BitTryerパスワードリセット", $content);
+
+            return true;
+        } else {
+            return false;
         }
+    }
+
+    /**
+     * @param string $token
+     * @param string $password
+     * @return false|mixed
+     */
+
+    public function forget_password_change_password(string $token, string $password)
+    {
+        $database = $this->load();
+
+        if ($this->in_forget_password_token($token)) {
+            $user_id = $database['forget_token'][$token];
+
+            $database['user'][$user_id]['password'] = password_hash(md5($password), PASSWORD_DEFAULT);
+            $this->save($database);
+
+            $_SESSION[$this->AppName]['token'] = null;
+
+            return $database['user'][$user_id];
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @return false|mixed
+     */
+    public function forget_password_auth()
+    {
+        return $_SESSION[$this->AppName]['forget_token'] ?? false;
+    }
+
+    /**
+     * @param string $token
+     * @return bool
+     */
+    public function in_forget_password_token(string $token)
+    {
+        $database = $this->load();
+        return isset($database['forget_token'][$token]);
     }
 }

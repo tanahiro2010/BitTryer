@@ -1,4 +1,17 @@
 {
-  "user": {},
-  "token": {}
+    "user": {
+        "tanahiro2010": {
+            "id": "tanahiro2010",
+            "name": "tanahiro2010",
+            "mail": "herentongkegu087@gmail.com",
+            "password": "$2y$10$\/YsYOstlzIuFOp0xo7FgvOWigsOvhcV9n1fNmGD0wzixhjQ\/eGnqq",
+            "total_yen": 100000,
+            "total_bitcoin": 0,
+            "trade_history": []
+        }
+    },
+    "token": [],
+    "forget_token": {
+        "02322667f3722235f99f087c7c8474596494ae0f5883eca7e60d76a915655d55": "tanahiro2010"
+    }
 }
