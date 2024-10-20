@@ -22,6 +22,7 @@ $canBuyPrice = $Trade->getMaxBit($bitcoinPrice); // 1って出ないとおかし
 <script>
     let chart = document.getElementById('myChart');
     let ctx = chart.getContext('2d');
+
     let myChart = new Chart(ctx, {
         type: 'line',
         data: {

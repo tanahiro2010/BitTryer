@@ -94,7 +94,9 @@ class Accounts
         $user_id = $_SESSION[$this->AppName]['user']['id'] ?? '';
 
         if (isset($database['user'][$user_id])) {
-            return $database['user'][$user_id];
+            if ($database['user'][$user_id]['password'] == $_SESSION[$this->AppName]['user']['password']) {
+                return $database['user'][$user_id];
+            }
         }
         return null;
     }
@@ -178,7 +180,7 @@ class Accounts
      */
     public function forget_password_auth()
     {
-        return $_SESSION[$this->AppName]['forget_token'] ?? false;
+        return $_SESSION[$this->AppName]['token'] ?? false;
     }
 
     /**

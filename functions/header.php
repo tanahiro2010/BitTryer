@@ -43,6 +43,13 @@ function echo_header($user_data, $BitAPI)
                             あなたもビットコイン売買を学習しよう！！
                         <?php endif; ?>
                     </div>
+                    <?php if ($user_data): ?>
+                    <div class="text-right text-white">
+                        所持
+                        <?php echo $user_data['total_yen']; ?>円
+                        <?php echo $user_data['total_bitcoin']; ?>ビットコイン
+                    </div>
+                    <?php endif; ?>
                     <a href="/<?php echo $user_data == null ? "login" : "dashboard"; ?>"
                        class="hover:bg-blue-400 group flex items-center rounded-md bg-blue-500 text-white text-sm font-medium pl-3 pr-3 py-2 shadow-sm text-8xl">
                         <?php echo $user_data == null ? "Login" : $user_data['name']; ?>

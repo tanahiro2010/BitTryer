@@ -28,6 +28,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 header('Location: ./?error=token');
             }
+        } else {
+            header('Location: ./?error=required');
         }
     } else {      // まだ忘れていなかった場合
         if (isset($_POST['id'])) {
@@ -96,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                     <div class="text-2xl hover:text-black font-mono">変更後のパスワードを入力</div><br>
                     <input type="text" class="rounded py-2 px-4 text-black" name="password" placeholder="password" required><br>
 
-                    <button type="submit" class="bg-gradient-to-r from-blue-900 to-gray-900 font-semibold text-white py-2 px-4 mt-3 mu-6 rounded shadow-md">パスワードリセットメールを送信</button><br><br>
+                    <button type="submit" class="bg-gradient-to-r from-blue-900 to-gray-900 font-semibold text-white py-2 px-4 mt-3 mu-6 rounded shadow-md">変更</button><br><br>
 
                     <a href="/login" class="text-blue-500 underline hover:text-blue-100">ログインはこちら</a><br>
 
