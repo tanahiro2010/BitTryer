@@ -192,4 +192,64 @@ class Accounts
         $database = $this->load();
         return isset($database['forget_token'][$token]);
     }
+
+    /**
+     * @param string $user_id
+     * @param string $key
+     * @param mixed $value
+     * @return bool
+     */
+
+    public function editParam(string $user_id, string $key, mixed $value)
+    {
+        $database = $this->load();
+
+        if (isset($database['user'][$user_id][$key])) {
+            $database['user'][$user_id][$key] = $value;
+            $this->save($database);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $user_id
+     * @param string $key
+     * @param mixed $value
+     * @return false|mixed
+     */
+
+    public function appendFromArrayCenter(string $user_id, string $key, mixed $value)
+    {
+        $database = $this->load();
+        if (isset($database['user'][$user_id][$key])) {
+            array_unshift($database['user'][$user_id][$key], $value);
+            $this->save($database);
+
+            return $database['user'][$user_id][$key];
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $user_id
+     * @param string $key
+     * @param mixed $value
+     * @return false|mixed
+     */
+
+    public function appendFromArrayLast(string $user_id, string $key, mixed $value)
+    {
+        $database = $this->load();
+        if (isset($database['user'][$user_id][$key])) {
+            array_shift($database['user'][$user_id][$key]);
+            $this->save($database);
+
+            return $database['user'][$user_id][$key];
+        }
+
+        return false;
+    }
 }

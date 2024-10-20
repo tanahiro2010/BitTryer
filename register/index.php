@@ -70,6 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             <!-- ログインフォーム -->
             <div class="items-center text-center <?php echo $error ? 'mt-2' : ''; ?>">
                 <form action="./" method="post" class="bg-gradient-to-r from-gray-900 to-blue-900 rounded shadow-md">
+                    <div class="h-3"></div>
                     <div class="text-2xl hover:text-black font-mono">register</div><br>
                     <input type="text" class="rounded py-2 px-4 text-black" name="id" placeholder="id" required><br>
                     <input type="text" class="rounded py-2 px-4 text-black mt-2" name="name" placeholder="name"><br>

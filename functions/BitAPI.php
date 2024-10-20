@@ -3,8 +3,10 @@ class BitAPI
 {
     private $ApiUrl = 'https://coincheck.com/api/ticker';
 
-    function __construct()
+    private $Accounts = null;
+    function __construct(Accounts $Accounts=null)
     {
+        $this->Accounts = $Accounts;
         return;
     }
 
@@ -49,5 +51,32 @@ class BitAPI
         }
 
         return $response['last'];
+    }
+
+    /**
+     * @param int $Yen
+     * @return float
+     */
+
+    public function calculate_max_bitcoin(int $Yen) // 最大何ビットコイン買収できるか取得
+    {
+        /**
+         * 1 : getYenPrice()
+         * x : $Yen
+         */
+
+        // ビットコイン価格（デフォルトは1BTC = 10,000,000円）
+        $btc_price = $this->getYenPrice();
+
+        // 最大購入可能なビットコインの量を計算
+        $max_btc = $Yen / $btc_price;
+
+        // 結果を小数点以下8桁まで表示（ビットコインの最小単位は0.00000001BTC）
+        return round($max_btc, 8);
+    }
+
+    public function sell_bitcoin(float $bitcoin)
+    {
+
     }
 }
