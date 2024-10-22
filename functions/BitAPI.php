@@ -10,7 +10,7 @@ class BitAPI
         return;
     }
 
-    private function api_get(string $url)
+    private function api_get(string $url): null | array
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -29,7 +29,7 @@ class BitAPI
         return $data;
     }
 
-    private function getBitCoinApiResponse()
+    private function getBitCoinApiResponse(): null | array
     {
         try {
             return $this->api_get($this->ApiUrl);
@@ -42,7 +42,7 @@ class BitAPI
      * @return int
      */
 
-    public function getYenPrice()
+    public function getYenPrice(): int
     {
         try {
             $response = $this->getBitCoinApiResponse();
@@ -54,11 +54,35 @@ class BitAPI
     }
 
     /**
+     * @param float $bit
+     * @return int
+     */
+    public function bitToJpy(float $bit): int
+    {
+        /*
+         * getYenPrice() : 1
+         * return        : $bit
+         */
+        return (int)$this->getYenPrice() * $bit;
+    }
+
+    public function jpyToBit(int $jpy_amount): float
+    {
+        /*
+         * getYenPrice() : 1
+         * $bit          : return
+         */
+
+        $bit_jpy_amount = $this->getYenPrice();
+        return (float)$bit_jpy_amount * $jpy_amount;
+    }
+
+    /**
      * @param int $Yen
      * @return float
      */
 
-    public function calculate_max_bitcoin(int $Yen) // 最大何ビットコイン買収できるか取得
+    public function calculate_max_bitcoin(int $Yen): float // 最大何ビットコイン買収できるか取得
     {
         /**
          * 1 : getYenPrice()
@@ -75,8 +99,95 @@ class BitAPI
         return round($max_btc, 8);
     }
 
-    public function sell_bitcoin(float $bitcoin)
+    /**
+     * @param string $user_id
+     * @param float $bitcoin
+     * @param boolean $isBot
+     * @return boolean
+     */
+    public function sell_bitcoin(string $user_id, float $bitcoin, bool $isBot = false): bool
     {
+        $user_data = $this->Accounts->in_account($user_id);
+        $jpyPrice = $this->bitToJpy($bitcoin);
 
+        $hasbit = $user_data['total_bitcoin'];
+
+        if ($hasbit >= $bitcoin && $bitcoin > 0) { // 正常
+            $user_data['total_bitcoin'] -= $bitcoin;
+            $user_data['total_yen'] += $jpyPrice;
+
+            $this->Accounts->save_user($user_id, $user_data);
+
+            $this->Accounts->appendFromArrayCenter($user_id, 'history', array(
+                "type" => "sell",
+                "bitcoin" => $bitcoin,
+                "jpy_amount" => $jpyPrice,
+                "time" => date('Y-m-d H:i:s'),
+                "is_bot" => $isBot
+            ));
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $user_id
+     * @param int $jpy_amount
+     * @param bool $isBot
+     * @return bool
+     */
+
+    public function buy_bitcoin(string $user_id, int $jpy_amount, bool $isBot = false): bool
+    {
+        $user_data = $this->Accounts->in_account($user_id);
+        $bitPrice = $this->calculate_max_bitcoin($jpy_amount);
+        echo $bitPrice . '<br>';
+
+        $hasJpy = $user_data['total_yen'];
+
+        if ($hasJpy >= $bitPrice && $jpy_amount > 0) {
+            $user_data['total_bitcoin'] += $bitPrice;
+            $user_data['total_yen'] -= $jpy_amount;
+            $user_data['last_jpy'] = $this->getYenPrice();
+
+            $this->Accounts->save_user($user_id, $user_data);
+
+            $this->Accounts->appendFromArrayCenter($user_id, 'history', array(
+                "type" => "buy",
+                "bitcoin" => $bitPrice,
+                "jpy_amount" => $jpy_amount,
+                "time" => date('Y-m-d H:i:s'),
+                "is_bot" => $isBot
+            ));
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $user_id
+     * @param string $target_id
+     * @param int $jpy_payment
+     * @return bool
+     */
+
+    public function send_jpy(string $user_id, string $target_id, int $jpy_payment): bool
+    {
+        $user_data = $this->Accounts->in_account($user_id);
+        $target_data = $this->Accounts->in_account($target_id);
+
+        if ($user_data && $target_data) {
+            $user_data['total_yen'] -= $jpy_payment;
+            $target_data['total_yen'] += $jpy_payment;
+
+            $this->Accounts->save_user($user_id, $user_data);
+            $this->Accounts->save_user($target_id, $target_data);
+
+            return true;
+        }
+
+        return false;
     }
 }

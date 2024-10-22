@@ -6,7 +6,7 @@ require_once '../functions/Trade.php';
 require_once '../functions/functions.php';
 
 $Accounts = new Accounts('../database/database.json', 'bitcoin');
-$BitAPI = new BitAPI();
+$BitAPI = new BitAPI($Accounts);
 
 $user_data = $Accounts->isLogin();
 
@@ -18,13 +18,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['type'])) {
         switch ($_POST['type']) {
             case 'bitcoin':    // ビットコインを購入
-                if (isset($_POST['bitcoin'])) {
+                if (isset($_POST['jpy'])) {
+                    $result = $BitAPI->buy_bitcoin($user_data['id'], (int)$_POST['jpy']);
 
+                    if ($result) {
+                        header('Location: ./');
+                    } else {
+                        header('Location: ./?error=amount');
+                    }
+                } else {
+                    header('Location: ./?error=required');
                 }
+                exit();
                 break;
 
-            case 'jpy_change': // ビットコインをポイントに換金
+            case 'jpy': // ビットコインをポイントに換金
+                if (isset($_POST['bitcoin'])) {
+                    $result = $BitAPI->sell_bitcoin($user_data['id'], (float)$_POST['bitcoin']);
 
+                    if ($result) {
+                        header('Location: ./');
+                    } else {
+                        header('Location: ./?error=bitcoin');
+                    }
+                } else {
+                    header('Location: ./?error=required');
+                }
+                exit();
                 break;
         }
     }
@@ -43,16 +63,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET'):
         <div class="text-lg mt-1">
             売買ポイント: <?php echo $user_data['total_yen']; ?>円<br>
             BitCoin: <?php echo $user_data['total_bitcoin']; ?> Coin<br>
+            前回貴方は<?php echo $user_data['last_jpy'] ?? 'Error'; ?>円で取引しました<br>
+            差は<?php echo $user_data['last_jpy'] == null ? 'Error' : $BitAPI->getYenPrice() - $user_data['last_jpy']; ?>です
         </div>
 
         <form action="./" method="post" class="text-center bg-gradient-to-r from-gray-900 to-blue-900 rounded shadow-md">
             <input type="hidden" name="type" value="bitcoin">
             <div class="h-3"></div>
-            <div class="text-2xl">BitCoin売却</div>
+            <div class="text-2xl">BitCoin購入</div>
             <div class="h-3"></div>
-            <input type="number" name="bitcoin" placeholder="最低0.00000001" class="rounded py-2 px-4 text-black" max="" min=""><br>
+            <input type="number" name="jpy" placeholder="最大: <?php echo $user_data['total_yen']; ?>" class="rounded py-2 px-4 text-black" max="" min=""><br>
 
             <button type="submit" class="bg-gradient-to-r from-blue-900 to-gray-900 font-semibold text-white py-2 px-4 mt-3 mu-6 rounded shadow-m">買収</button>
+            <div class="h-5"></div>
+        </form>
+
+        <form action="./" method="post" class="text-center bg-gradient-to-r from-gray-900 to-blue-900 rounded shadow-md">
+            <input type="hidden" name="type" value="jpy">
+            <div class="h-3"></div>
+            <div class="text-2xl">BitCoin売却</div>
+            <div class="h-3"></div>
+            <input type="text" name="bitcoin" placeholder="最大: <?php echo $user_data['total_bitcoin']; ?>" class="rounded py-2 px-4 text-black" max="" min=""><br>
+
+            <button type="submit" class="bg-gradient-to-r from-blue-900 to-gray-900 font-semibold text-white py-2 px-4 mt-3 mu-6 rounded shadow-m">売却</button>
             <div class="h-5"></div>
         </form>
     </section>

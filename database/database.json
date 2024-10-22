@@ -5,13 +5,21 @@
             "name": "tanahiro2010",
             "mail": "herentongkegu087@gmail.com",
             "password": "$2y$10$\/YsYOstlzIuFOp0xo7FgvOWigsOvhcV9n1fNmGD0wzixhjQ\/eGnqq",
+            "total_yen": 0,
+            "total_bitcoin": 0.00987262,
+            "trade_history": [],
+            "last_jpy": 10120515
+        },
+        "tako": {
+            "id": "tako",
+            "name": "tako",
+            "mail": "tako@neonz.net",
+            "password": "$2y$10$Ytm4TLh4bbLQwHYBRw79fuGv3ti3ZaTPrCIXCeqy\/5sTE0e3Dmgzy",
             "total_yen": 100000,
             "total_bitcoin": 0,
             "trade_history": []
         }
     },
     "token": [],
-    "forget_token": {
-        "02322667f3722235f99f087c7c8474596494ae0f5883eca7e60d76a915655d55": "tanahiro2010"
-    }
+    "forget_token": []
 }

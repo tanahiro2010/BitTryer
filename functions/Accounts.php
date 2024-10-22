@@ -16,6 +16,10 @@ class Accounts
         $this->AppName = $SESSION_NAME;
     }
 
+    /**
+     * @return mixed
+     */
+
     private function load()
     {
         return json_decode(file_get_contents($this->DB_PATH), true);
@@ -24,6 +28,26 @@ class Accounts
     private function save(mixed $database)
     {
         return file_put_contents($this->DB_PATH, json_encode($database, JSON_PRETTY_PRINT));
+    }
+
+    /**
+     * @param string $user_id
+     * @param mixed $user_data
+     * @return bool
+     */
+
+    public function save_user(string $user_id, mixed $user_data): bool
+    {
+        $database = $this->load();
+
+        if (isset($database['user'][$user_id])) {
+            $database['user'][$user_id] = $user_data;
+
+            $this->save($database);
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -82,6 +106,37 @@ class Accounts
         } else {
             return false;
         }
+    }
+
+    /**
+     * @param string $user_id
+     * @return bool
+     */
+
+    public function toAdmin(string $user_id): bool
+    {
+        $database = $this->load();
+
+        if (isset($database['user'][$user_id])) {
+            $database['user'][$user_id]['admin'] = true;
+            $this->save($database);
+            return true;
+        }
+
+        return false;
+    }
+
+    public function toMember(string $user_id): bool
+    {
+        $database = $this->load();
+
+        if (isset($database['user'][$user_id])) {
+            $database['user'][$user_id]['admin'] = true;
+            $this->save($database);
+            return true;
+        }
+
+        return false;
     }
 
     /**

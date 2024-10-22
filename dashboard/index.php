@@ -26,6 +26,8 @@ echo_header($user_data, $BitAPI);
         <div class="text-lg mt-1">
             売買ポイント: <?php echo $user_data['total_yen']; ?>円<br>
             BitCoin: <?php echo $user_data['total_bitcoin']; ?> Coin<br>
+            前回貴方は<?php echo $user_data['last_jpy'] ?? 'Error'; ?>円で取引しました<br>
+            差は<?php echo $user_data['last_jpy'] == null ? 'Error' : $BitAPI->getYenPrice() - $user_data['last_jpy']; ?>です
         </div>
 
         <div>
@@ -37,9 +39,15 @@ echo_header($user_data, $BitAPI);
                class="justify-between bg-gradient-to-r from-blue-900 to-gray-900 font-semibold text-white py-2 px-5 w-full mt-3 mu-6 rounded shadow-md flex cursor-pointer hover:bg-white">
                 <div class="text-left">送金</div><div class="text-right">ここをタップ</div>
             </a>
+            <a href="/history"
+               class="justify-between bg-gradient-to-r from-blue-900 to-gray-900 font-semibold text-white py-2 px-5 w-full mt-3 mu-6 rounded shadow-md flex cursor-pointer hover:bg-white">
+                <div class="text-left">取引履歴</div><div class="text-right">ここをタップ</div>
+            </a>
         </div>
 
-        <div class="text-2xl">Accounts</div>
+
+
+        <div class="text-2xl mt-5">Accounts</div>
         <div>
             <a href="/change_password"
                class="justify-between bg-gradient-to-r from-blue-900 to-gray-900 font-semibold text-white py-2 px-5 w-full mt-3 mu-6 rounded shadow-md flex cursor-pointer hover:bg-white">
