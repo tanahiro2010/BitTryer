@@ -29,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 } else {
                     header('Location: ./?error=required');
                 }
-                exit();
                 break;
 
             case 'jpy': // ビットコインをポイントに換金
@@ -44,9 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 } else {
                     header('Location: ./?error=required');
                 }
-                exit();
                 break;
         }
+
+        exit();
     }
 } elseif ($_SERVER['REQUEST_METHOD'] == 'GET') {
     echo_header($user_data, $BitAPI);

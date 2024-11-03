@@ -5,9 +5,17 @@
             "name": "tanahiro2010",
             "mail": "herentongkegu087@gmail.com",
             "password": "$2y$10$\/YsYOstlzIuFOp0xo7FgvOWigsOvhcV9n1fNmGD0wzixhjQ\/eGnqq",
-            "total_yen": 0,
-            "total_bitcoin": 0.00987262,
-            "trade_history": [],
+            "total_yen": 99791,
+            "total_bitcoin": 0,
+            "trade_history": [
+                {
+                    "type": "sell",
+                    "bitcoin": 0.00987262,
+                    "jpy_amount": 99791,
+                    "time": "2024-10-22 11:51:24",
+                    "is_bot": false
+                }
+            ],
             "last_jpy": 10120515
         },
         "tako": {

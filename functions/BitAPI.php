@@ -118,7 +118,7 @@ class BitAPI
 
             $this->Accounts->save_user($user_id, $user_data);
 
-            $this->Accounts->appendFromArrayCenter($user_id, 'history', array(
+            $this->Accounts->appendFromArrayCenter($user_id, 'trade_history', array(
                 "type" => "sell",
                 "bitcoin" => $bitcoin,
                 "jpy_amount" => $jpyPrice,
@@ -153,7 +153,7 @@ class BitAPI
 
             $this->Accounts->save_user($user_id, $user_data);
 
-            $this->Accounts->appendFromArrayCenter($user_id, 'history', array(
+            $this->Accounts->appendFromArrayCenter($user_id, 'trade_history', array(
                 "type" => "buy",
                 "bitcoin" => $bitPrice,
                 "jpy_amount" => $jpy_amount,
@@ -173,17 +173,35 @@ class BitAPI
      * @return bool
      */
 
-    public function send_jpy(string $user_id, string $target_id, int $jpy_payment): bool
+    public function send_jpy(string $user_id, string $target_id, int $jpy_payment, bool $isBot = false): bool
     {
         $user_data = $this->Accounts->in_account($user_id);
         $target_data = $this->Accounts->in_account($target_id);
 
-        if ($user_data && $target_data) {
+        if ($user_data && $target_data && 0 < $jpy_payment) {
             $user_data['total_yen'] -= $jpy_payment;
             $target_data['total_yen'] += $jpy_payment;
 
             $this->Accounts->save_user($user_id, $user_data);
             $this->Accounts->save_user($target_id, $target_data);
+
+            $this->Accounts->appendFromArrayCenter($user_id, 'trade_history', array(
+                "type" => "send",
+                "target_id" => $target_id,
+                "bitcoin" => null,
+                "jpy_amount" => $jpy_payment,
+                "time" => date('Y-m-d H:i:s'),
+                "is_bot" => $isBot
+            ));
+
+            $this->Accounts->appendFromArrayCenter($target_id, 'trade_history', array(
+                "type" => "catch",
+                "from_id" => $user_id,
+                "bitcoin" => null,
+                "jpy_amount" => $jpy_payment,
+                "time" => date('Y-m-d H:i:s'),
+                "is_bot" => $isBot
+            ));
 
             return true;
         }

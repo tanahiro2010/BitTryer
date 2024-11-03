@@ -140,10 +140,10 @@ class Accounts
     }
 
     /**
-     * @return mixed
+     * @return array | bool
      */
 
-    public function isLogin()
+    public function isLogin(): null | array
     {
         $database = $this->load();
         $user_id = $_SESSION[$this->AppName]['user']['id'] ?? '';
@@ -159,7 +159,7 @@ class Accounts
     /**
      * @return void
      */
-    public function logout()
+    public function logout(): void
     {
         session_destroy();
     }
@@ -168,7 +168,7 @@ class Accounts
      * @param string $user_id
      * @return false|mixed
      */
-    public function in_account(string $user_id)
+    public function in_account(string $user_id): bool | array
     {
         $database = $this->load();
         return $database['user'][$user_id] ?? false;
@@ -180,7 +180,7 @@ class Accounts
      * @throws \Random\RandomException
      */
 
-    public function forget_password_create_token(string $user_id)
+    public function forget_password_create_token(string $user_id): bool
     {
         $database = $this->load();
 
@@ -212,7 +212,7 @@ class Accounts
      * @return false|mixed
      */
 
-    public function forget_password_change_password(string $token, string $password)
+    public function forget_password_change_password(string $token, string $password): bool | array
     {
         $database = $this->load();
 
@@ -220,6 +220,7 @@ class Accounts
             $user_id = $database['forget_token'][$token];
 
             $database['user'][$user_id]['password'] = password_hash(md5($password), PASSWORD_DEFAULT);
+            unset($database['forget_token'][$token]);
             $this->save($database);
 
             $_SESSION[$this->AppName]['token'] = null;
@@ -242,7 +243,7 @@ class Accounts
      * @param string $token
      * @return bool
      */
-    public function in_forget_password_token(string $token)
+    public function in_forget_password_token(string $token): bool
     {
         $database = $this->load();
         return isset($database['forget_token'][$token]);
@@ -255,7 +256,7 @@ class Accounts
      * @return bool
      */
 
-    public function editParam(string $user_id, string $key, mixed $value)
+    public function editParam(string $user_id, string $key, mixed $value): bool
     {
         $database = $this->load();
 
@@ -275,7 +276,7 @@ class Accounts
      * @return false|mixed
      */
 
-    public function appendFromArrayCenter(string $user_id, string $key, mixed $value)
+    public function appendFromArrayCenter(string $user_id, string $key, mixed $value): bool | array
     {
         $database = $this->load();
         if (isset($database['user'][$user_id][$key])) {
@@ -295,7 +296,7 @@ class Accounts
      * @return false|mixed
      */
 
-    public function appendFromArrayLast(string $user_id, string $key, mixed $value)
+    public function appendFromArrayLast(string $user_id, string $key, mixed $value): array | false
     {
         $database = $this->load();
         if (isset($database['user'][$user_id][$key])) {
